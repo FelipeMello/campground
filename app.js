@@ -13,7 +13,8 @@ app.set("view engine", "ejs");
 // SCHEMA SETUP
 const campgroundSchema = new mongoose.Schema({
     name: String,
-    image: String
+    image: String,
+    description : String
 });
 //compiling into a model
 const Campground = mongoose.model("Campground", campgroundSchema);
@@ -24,7 +25,7 @@ app.get("/", function(req, res){
 });
 
 
-//this get all the campgrounds from the mongodb database
+//INDEX - show all campgrounds - this get all the campgrounds from the mongodb database
 app.get("/campgrounds", function(req,res){  
     //Get All campgrounds from DB
     //when the function find() is done then it call the callback and render the data
@@ -33,36 +34,52 @@ app.get("/campgrounds", function(req,res){
             console.log(err);
         }else{
                             //name          data
-            res.render("campgrounds",{campgrounds:allCampgrounds});      //then render it
+            res.render("index",{campgrounds:allCampgrounds});      //then render it
         }
     });
     
 });
 
-//create a new campground
+//CREATE - add new campground to DB
 app.post("/campgrounds", function(req,res){
-        let name = req.body.name;
-        let image = req.body.image;
-        let newCampGround = {name: name, image: image};
-        //get data from form and add to campground array
-        //Create a new campground and save to DB
-        Campground.create(newCampGround, function(err, newlyCreated){
-            if(err){
-                //send the user back to the page and tell the user what went wrong
-                console.log(err);
-            }else{
-                //redirect back to campgrounds page
-                res.redirect("/campgrounds");
-            }
-        });
+    let name = req.body.name;
+    let image = req.body.image;
+    let desc = req.body.description;
+    
+    let newCampGround = {name: name, image: image, description: desc};
+    Campground.create(newCampGround, function(err, newlyCreated){
+        if(err){
+            console.log(err);
+        }else{
+            //redirect back to campgrounds page
+            res.redirect("/campgrounds");
+        }
     });
+});
     
 
 //this shows the form
 // Restful convention show the form to send the data to post/campgrouds
+//NEW - show form to create new campground - Restful convention show the form to send the data to post/campgrouds
 app.get("/campgrounds/new", function(req, res){
     res.render("new.ejs");    
 })
+
+//In an rest api new always has to come before show or show will re-route new
+//SHOW - shows more infor about a specific campground
+app.get("/campgrounds/:id", function(req, res){
+    //find campground with provided ID
+    Campground.findById(req.params.id, function(err, foundCampground){
+        if(err){
+            console.log(err);
+            
+        }else{
+            //render show template with that campground
+            res.render("show",{campground: foundCampground});
+        }
+    });
+});
+
 
 
 
