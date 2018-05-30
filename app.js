@@ -1,29 +1,22 @@
-const express = require("express");
-const app = express();
-const bodyParser = require("body-parser");
+const   express     = require("express"),
+        app         = express(),
+        bodyParser  = require("body-parser"),
+        mongoose    = require("mongoose");
 
+//Connect to the yelp_cap databse
+mongoose.connect("mongodb://localhost/yelp_camp");
 
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
-const campgrounds =[
-        {name:"Salmon Creek", image:"https://pixabay.com/get/ea36b70928f21c22d2524518b7444795ea76e5d004b0144392f5c97da7e9b3_340.jpg"},
-        {name:"Granite Hill", image:"https://pixabay.com/get/e83db50a21f4073ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        {name:"Mountain Goat's Rest", image:"https://pixabay.com/get/e837b5092af3083ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        {name:"Salmon Creek", image:"https://pixabay.com/get/ea36b70928f21c22d2524518b7444795ea76e5d004b0144392f5c97da7e9b3_340.jpg"},
-        {name:"Granite Hill", image:"https://pixabay.com/get/e83db50a21f4073ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        {name:"Mountain Goat's Rest", image:"https://pixabay.com/get/e837b5092af3083ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        
-        {name:"Salmon Creek", image:"https://pixabay.com/get/ea36b70928f21c22d2524518b7444795ea76e5d004b0144392f5c97da7e9b3_340.jpg"},
-        {name:"Granite Hill", image:"https://pixabay.com/get/e83db50a21f4073ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        {name:"Mountain Goat's Rest", image:"https://pixabay.com/get/e837b5092af3083ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        {name:"Salmon Creek", image:"https://pixabay.com/get/ea36b70928f21c22d2524518b7444795ea76e5d004b0144392f5c97da7e9b3_340.jpg"},
-        {name:"Granite Hill", image:"https://pixabay.com/get/e83db50a21f4073ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"},
-        {name:"Mountain Goat's Rest", image:"https://pixabay.com/get/e837b5092af3083ed1584d05fb1d4e97e07ee3d21cac104497f7c471a3edb1be_340.jpg"}
-        
-    ];
-    
+// SCHEMA SETUP
+const campgroundSchema = new mongoose.Schema({
+    name: String,
+    image: String
+});
+//compiling into a model
+const Campground = mongoose.model("Campground", campgroundSchema);
 
 // home page
 app.get("/", function(req, res){
@@ -31,24 +24,39 @@ app.get("/", function(req, res){
 });
 
 
-//this show us all the campgrounds
-app.get("/campgrounds", function(req,res){                            //name          data
-    res.render("campgrounds",{campgrounds:campgrounds});
+//this get all the campgrounds from the mongodb database
+app.get("/campgrounds", function(req,res){  
+    //Get All campgrounds from DB
+    //when the function find() is done then it call the callback and render the data
+    Campground.find({}, function(err, allCampgrounds){//callback
+        if(err){
+            console.log(err);
+        }else{
+                            //name          data
+            res.render("campgrounds",{campgrounds:allCampgrounds});      //then render it
+        }
+    });
+    
 });
 
 //create a new campground
 app.post("/campgrounds", function(req,res){
-//    res.send("You hit the post route");
-    let name = req.body.name;
-    let image = req.body.image;
-    let newCampGround = {name: name, image: image};
-    //get data from form and add to campground array
-    campgrounds.push(newCampGround);//adding into the array
+        let name = req.body.name;
+        let image = req.body.image;
+        let newCampGround = {name: name, image: image};
+        //get data from form and add to campground array
+        //Create a new campground and save to DB
+        Campground.create(newCampGround, function(err, newlyCreated){
+            if(err){
+                //send the user back to the page and tell the user what went wrong
+                console.log(err);
+            }else{
+                //redirect back to campgrounds page
+                res.redirect("/campgrounds");
+            }
+        });
+    });
     
-    //redirect back to campgrounds page
-    res.redirect("/campgrounds");
-    //the default is to redirect as a get request
-});
 
 //this shows the form
 // Restful convention show the form to send the data to post/campgrouds
