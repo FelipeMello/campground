@@ -6,7 +6,6 @@
         <div class="container">
             <h1>Welcome to YelpCamp!</h1>   
             <p>View our hand-picked camprgrounds from all over the world</p>
-            
             <p>
                 <a class="btn btn-primary  btn-lg" href="/campgrounds/new">Add new campground</a>    
             </p>    
@@ -20,7 +19,7 @@
         <div class="col-md-3 col-sm-6">
             <div class ="thumbnail">
                 <!--Images has different heights-->
-                <img src="<%=campground.image%>">    
+                <img class="img-fluid img-thumbnail" src="<%=campground.image%>">    
                 <div class="caption">
                     <h4><%= campground.name %></h4>
                 </div>

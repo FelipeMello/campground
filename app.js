@@ -10,15 +10,33 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
 
+
 // SCHEMA SETUP
 const campgroundSchema = new mongoose.Schema({
     name: String,
     image: String,
     description : String
 });
+
 //compiling into a model
 const Campground = mongoose.model("Campground", campgroundSchema);
 
+//Add a compground
+/*
+Campground.create({
+        name:"Granite Hill",
+        image:"http://photosforclass.com/download/flickr-2386125489",
+        description:"This is a hige granite hill, no bathrooms, no Water. Beautiful granite"
+    }, function(err, campground){
+        if(err){
+            console.log(err)
+        }else{
+            console.log("Created Campground");
+            console.log(campground);
+        }
+    });
+
+*/
 // home page
 app.get("/", function(req, res){
     res.render("landing");
@@ -56,16 +74,14 @@ app.post("/campgrounds", function(req,res){
         }
     });
 });
-    
 
-//this shows the form
-// Restful convention show the form to send the data to post/campgrouds
+
 //NEW - show form to create new campground - Restful convention show the form to send the data to post/campgrouds
 app.get("/campgrounds/new", function(req, res){
     res.render("new.ejs");    
-})
+});
 
-//In an rest api new always has to come before show or show will re-route new
+//the new has to come before SHOW
 //SHOW - shows more infor about a specific campground
 app.get("/campgrounds/:id", function(req, res){
     //find campground with provided ID
@@ -79,8 +95,6 @@ app.get("/campgrounds/:id", function(req, res){
         }
     });
 });
-
-
 
 
 app.listen(process.env.PORT, process.env.IP, function(){
