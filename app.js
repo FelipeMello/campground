@@ -2,7 +2,10 @@ const   express     = require("express"),
         app         = express(),
         bodyParser  = require("body-parser"),
         mongoose    = require("mongoose"),
-        Campground  = require("./models/campground");
+        Campground  = require("./models/campground"),
+        seedDB      = require("./seeds");
+    
+seedDB();
 
 
 //Connect to the yelp_cap databse
