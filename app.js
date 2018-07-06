@@ -1,7 +1,9 @@
 const   express     = require("express"),
         app         = express(),
         bodyParser  = require("body-parser"),
-        mongoose    = require("mongoose");
+        mongoose    = require("mongoose"),
+        Campground  = require("./models/campground");
+
 
 //Connect to the yelp_cap databse
 mongoose.connect("mongodb://localhost/yelp_camp");
@@ -11,15 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 
 
-// SCHEMA SETUP
-const campgroundSchema = new mongoose.Schema({
-    name: String,
-    image: String,
-    description : String
-});
 
-//compiling into a model
-const Campground = mongoose.model("Campground", campgroundSchema);
 
 //Add a compground
 /*
@@ -96,7 +90,7 @@ app.get("/campgrounds/:id", function(req, res){
     });
 });
 
-
-app.listen(process.env.PORT, process.env.IP, function(){
-    console.log("The YelpCamp Server has started!");
-})
+const port = 3000;
+app.listen(port, function(){
+    console.log(`The YelpCamp Server has started! http://127.0.0.1:${port}/`)
+});
