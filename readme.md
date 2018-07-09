@@ -18,7 +18,6 @@
 
 #RESTful Routes
 * name   url             verb        desc
-==================================================
 * INDEX   /campgrounds    GET         Campgrounds
 * NEW     /campground/new GET         NewCampground
 * CREATE  /campgrounds    POST        A ddCampground
@@ -28,4 +27,3 @@
 * NEW    /campgrounds/:id/comments/new    GET
 * CREATE /campgrounds/:id/comments        POST
 
-==================================================

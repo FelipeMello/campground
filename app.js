@@ -7,9 +7,11 @@ const   express     = require("express"),
         seedDB      = require("./seeds");
     
 
-mongoose.connect("mongodb://localhost/yelp_camp_v3");
+//Using mongoose to connect to cloud mongodb Atlas
+mongoose.connect("mongodb+srv://username:password@cluster0-vz2p4.mongodb.net/test?retryWrites=true");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + "/public"));
 seedDB();
 //Connect to the yelp_cap databse
 
