@@ -30,7 +30,7 @@ app.get("/campgrounds", function(req,res){
             console.log(err);
         }else{
                             //name          data
-            res.render("index",{campgrounds:allCampgrounds});      //then render it
+            res.render("campgrounds/index",{campgrounds:allCampgrounds});      //then render it
         }
     });
     
@@ -56,7 +56,7 @@ app.post("/campgrounds", function(req,res){
 
 //NEW - show form to create new campground - Restful convention show the form to send the data to post/campgrouds
 app.get("/campgrounds/new", function(req, res){
-    res.render("new.ejs");    
+    res.render("campgrounds/new");    
 });
 
 //the new has to come before SHOW
@@ -71,10 +71,26 @@ app.get("/campgrounds/:id", function(req, res){
         }else{
             console.log(foundCampground);
             //render show template with that campground
-            res.render("show",{campground: foundCampground});
+            res.render("campgrounds/show",{campground: foundCampground});
         };
     });
 });
+
+   //==================//
+  // COMMENTS ROUTES  //
+ //==================//
+ app.get("/campgrounds/:id/comments/new", function(req, res){
+    // find campground by id 
+    Campground.findById(req.params.id, function(err, campground){
+        if(err){
+            console.log(err);
+        }else{
+            res.render("comments/new", {campground: campground});
+        }
+    })
+    
+
+ })
 
 const port = 3000;
 app.listen(port, function(){
