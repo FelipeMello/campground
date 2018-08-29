@@ -27,3 +27,6 @@
 * NEW    /campgrounds/:id/comments/new    GET
 * CREATE /campgrounds/:id/comments        POST
 
+##Auth Part 1 - Add User Model
+* Install all packages needed for auth
+* Define User model
