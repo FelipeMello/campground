@@ -1,14 +1,17 @@
-const   express     = require("express"),
-        app         = express(),
-        bodyParser  = require("body-parser"),
-        mongoose    = require("mongoose"),
-        Campground  = require("./models/campground"),
-        Comment     = require("./models/comment"),
-        seedDB      = require("./seeds");
+const   express         = require("express"),
+        app             = express(),
+        bodyParser      = require("body-parser"),
+        mongoose        = require("mongoose"),
+        passport        = require("passport"),
+        localStrategy   = require("passport-local"),
+        campground      = require("./models/campground"),
+        comment         = require("./models/comment"),
+        user            = require("./models/user"),
+        seedDB          = require("./seeds");
     
 
 //Using mongoose to connect to cloud mongodb Atlas
-mongoose.connect("mongodb+srv://username:password@cluster0-vz2p4.mongodb.net/test?retryWrites=true");
+mongoose.connect("mongodb+srv://felipe:!!Fsheelaghs2!!@cluster0-vz2p4.mongodb.net/test?retryWrites=true");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
@@ -28,7 +31,7 @@ app.get("/", function(req, res){
 app.get("/campgrounds", function(req,res){  
     //Get All campgrounds from DB
     //when the function find() is done then it call the callback and render the data
-    Campground.find({}, function(err, allCampgrounds){//callback
+    campground.find({}, function(err, allCampgrounds){//callback
         if(err){
             console.log(err);
         }else{
@@ -46,7 +49,7 @@ app.post("/campgrounds", function(req,res){
     let desc = req.body.description;
     
     let newCampGround = {name: name, image: image, description: desc};
-    Campground.create(newCampGround, function(err, newlyCreated){
+    campground.create(newCampGround, function(err, newlyCreated){
         if(err){
             console.log(err);
         }else{
@@ -66,7 +69,7 @@ app.get("/campgrounds/new", function(req, res){
 //SHOW - shows more infor about a specific campground
 app.get("/campgrounds/:id", function(req, res){
     //find campground with provided ID
-    Campground.findById(req.params.id).
+    campground.findById(req.params.id).
     populate("comments").
     exec(function(err, foundCampground){
         if(err){
@@ -84,7 +87,7 @@ app.get("/campgrounds/:id", function(req, res){
  //==================//
  app.get("/campgrounds/:id/comments/new", function(req, res){
     // find campground by id 
-    Campground.findById(req.params.id, function(err, campground){
+    campground.findById(req.params.id, function(err, campground){
         if(err){
             console.log(err);
         }else{
@@ -97,7 +100,7 @@ app.get("/campgrounds/:id", function(req, res){
 
  app.post("/campgrounds/:id/comments", function(req, res){
      //Lookup campground by ID
-     Campground.findById(req.params.id, function(err, campground){
+     campground.findById(req.params.id, function(err, campground){
          if(err){
              console.log(err);
              res.redirect("/campgrounds");
@@ -105,7 +108,7 @@ app.get("/campgrounds/:id", function(req, res){
             //Create a new comment
             //connect new comment to campground
             //redirect to campground show page.
-            Comment.create(req.body.comment, function(err, comment){
+            comment.create(req.body.comment, function(err, comment){
                 if(err){
                     console.log(err);
                 }else{
