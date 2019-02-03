@@ -11,7 +11,7 @@ const   express         = require("express"),
     
 
 //Using mongoose to connect to cloud mongodb Atlas
-mongoose.connect("mongodb+srv://felipe:!!Fsheelaghs2!!@cluster0-vz2p4.mongodb.net/test?retryWrites=true");
+mongoose.connect("mongodb+srv://<USERBANE>:<PASSWORD>@cluster0-vz2p4.mongodb.net/test?retryWrites=true");
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
