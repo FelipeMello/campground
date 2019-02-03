@@ -30,3 +30,8 @@
 ##Auth Part 1 - Add User Model
 * Install all packages needed for auth
 * Define User model
+
+##Auth Part 2 - Register
+* Configure Passport
+* Add register routes
+* Add register template

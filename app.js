@@ -6,7 +6,7 @@ const   express         = require("express"),
         localStrategy   = require("passport-local"),
         campground      = require("./models/campground"),
         comment         = require("./models/comment"),
-        user            = require("./models/user"),
+        User            = require("./models/user"),
         seedDB          = require("./seeds");
     
 
@@ -18,7 +18,18 @@ app.use(express.static(__dirname + "/public"));
 seedDB();
 //Connect to the yelp_cap databse
 
+//PASSPORT Configuration
+app.use(require("express-session")({
+    secret : "My secret password Muahahaha!",
+    resave: false,
+    saveUninitialized: false
+}));
 
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 
 // home page
@@ -120,9 +131,30 @@ app.get("/campgrounds/:id", function(req, res){
          }
      })
      
- })
+ });
 
-const port = 3000;
+//==================
+ //AUTH ROUTES
+//==================
+//show the register form
+app.get("/register", (req,res)=>{
+    res.render("register");
+})
+//handle sign up logic
+app.post("/register", (req, res)=>{
+    const newUser = new User({username: req.body.username});
+    User.register(newUser, req.body.password, (err, user)=>{
+        if(err){
+            console.log(err);
+            res.render("register");
+        }
+        passport.authenticate("local"),(req, res, ()=>{
+            res.redirect("/campgrounds");
+        })
+    });
+})
+
+const port = 3001;
 app.listen(port, function(){
     console.log(`The YelpCamp Server has started! http://127.0.0.1:${port}/`)
 });
